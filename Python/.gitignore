@@ -1,0 +1,13 @@
+# Ignore compiled TypeScript files
+python/dist/
+*.js
+*.js.map
+
+# Ignore environment and config stuff
+node_modules/
+.env
+.DS_Store
+
+# Bytecode for Python
+__pycache__/
+*.pyc
