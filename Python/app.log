@@ -1,0 +1,6 @@
+2025-04-17 09:35:10,023 - INFO - Division Successful: 55 / 67 = 0.8208955223880597
+2025-04-17 09:35:10,023 - INFO - Division attempt finished.
+2025-04-17 09:35:16,006 - ERROR - Attempted division by zero.
+2025-04-17 09:35:16,006 - INFO - Division attempt finished.
+2025-04-17 09:35:55,277 - ERROR - Entered a non number.
+2025-04-17 09:35:55,278 - INFO - Division attempt finished.
