@@ -1,0 +1,1 @@
+C:\Users\DakotaPerez\OneDrive\ -\ Englander\ Fischer\Desktop\Projects\Course\Rust\day38_library_penalties\target\debug\day38_library_penalties.exe: C:\Users\DakotaPerez\OneDrive\ -\ Englander\ Fischer\Desktop\Projects\Course\Rust\day38_library_penalties\src\main.rs

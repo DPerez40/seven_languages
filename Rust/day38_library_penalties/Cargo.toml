@@ -1,0 +1,6 @@
+[package]
+name = "day38_library_penalties"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
