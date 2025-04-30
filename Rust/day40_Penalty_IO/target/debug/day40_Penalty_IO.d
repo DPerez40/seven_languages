@@ -1,0 +1,1 @@
+C:\Users\DakotaPerez\OneDrive\ -\ Englander\ Fischer\Desktop\Projects\Course\Rust\day40_Penalty_IO\target\debug\day40_Penalty_IO.exe: C:\Users\DakotaPerez\OneDrive\ -\ Englander\ Fischer\Desktop\Projects\Course\Rust\day40_Penalty_IO\src\main.rs

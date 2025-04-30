@@ -1,0 +1,23 @@
+{
+"books": [
+  {
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "year": 1965,
+    "borrowed": false,
+    "borrowed_date": null,
+    "due_date": null,
+    "reservations": []
+  }
+],
+"magazines": [
+  {
+    "title": "Scientific American",
+    "issue": "March 2024",
+    "borrowed": false,
+    "borrowed_date": null,
+    "due_date": null,
+    "reservations": []
+  }
+]
+}
