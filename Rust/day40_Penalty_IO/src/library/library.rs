@@ -1,0 +1,112 @@
+use crate::library::book::Book;
+use crate::library::magazine::Magazine;
+use crate::library::traits::Borrowable;
+use crate::library::user::User;
+use std::fs::File;
+use std::io::Write;
+use std::fs;
+use serde_json;
+
+pub struct Library {
+    pub items: Vec<Box<dyn Borrowable>>,
+    pub books: Vec<Book>,
+    pub magazines: Vec<Magazine>,
+}
+
+impl Library {
+    pub fn new() -> Self {
+        Library {
+            items: Vec::new(),
+            books: Vec::new(),
+            magazines: Vec::new(),
+        }
+    }
+
+    pub fn add_item(&mut self, item: Box<dyn Borrowable>) {
+        self.items.push(item);
+    }
+
+    pub fn reserve_item(&mut self, index: usize, user_name: String) {
+        if let Some(item) = self.items.get_mut(index) {
+            item.reserve_item(user_name);
+        } else {
+            println!("Invalid item index.");
+        }
+    }
+
+    pub fn list_items(&self) {
+        println!("Items in library:");
+        for item in &self.items {
+            println!("- {}", item.status());
+        }
+    }
+
+    pub fn borrow_item(&mut self, index: usize) {
+        if let Some(item) = self.items.get_mut(index) {
+            item.borrow_item();
+        } else {
+            println!("Invalid item index.");
+        }
+    }
+
+    pub fn return_item(&mut self, index: usize, user: &mut User) {
+        if let Some(item) = self.items.get_mut(index) {
+            item.return_item(user);
+        } else {
+            println!("Invalid item index.");
+        }
+    }
+
+    pub fn search(&self, keyword: &str) {
+        println!("Search results for {}", keyword);
+        let mut found = false;
+
+        for (i, item) in self.items.iter().enumerate() {
+            let status = item.status();
+            if status.to_lowercase().contains(&keyword.to_lowercase()) {
+                println!("{}: {}", i, status);
+                found = true;
+            }
+        }
+
+        if !found {
+            println!("No items found for '{}'.", keyword);
+        }
+    }
+
+    pub fn save_to_file(&self) {
+        let books_json = serde_json::to_string_pretty(&self.books).expect("Failed to serialize books.");
+        let magazines_json = serde_json::to_string_pretty(&self.magazines).expect("Failed to serialize magazines.");
+
+        let mut file = File::create("library_save.json").expect("Failed to create new file.");
+
+        writeln!(file, "{{").unwrap();
+        writeln!(file, "\"books\": {},", books_json).unwrap();
+        writeln!(file, "\"magazines\": {}", magazines_json).unwrap();
+        writeln!(file, "}}").unwrap();
+
+        println!("Library saved to 'library_save.json'");
+    }
+
+    pub fn load_from_file(&mut self) {
+        let data = fs::read_to_string("library_save.json").expect("Failed to read file");
+
+        let parsed: serde_json::Value = serde_json::from_str(&data).expect("Failed to parse JSON.");
+
+        let books: Vec<Book> = serde_json::from_value(parsed["books"].clone()).expect("Failed to deserialize books.");
+        let magazines: Vec<Magazine> = serde_json::from_value(parsed["magazines"].clone()).expect("Failed to deserialize magazines.");
+
+        self.books = books;
+        self.magazines = magazines;
+
+        self.items.clear();
+        for book in &self.books {
+            self.items.push(Box::new(book.clone()));
+        }
+        for mag in &self.magazines {
+            self.items.push(Box::new(mag.clone()));
+        }
+
+        println!("Library loaded from 'library_save.json'.");
+    }
+}
