@@ -11,6 +11,7 @@ pub struct Library {
     pub items: Vec<Box<dyn Borrowable>>,
     pub books: Vec<Book>,
     pub magazines: Vec<Magazine>,
+    pub users: Vec<User>,
 }
 
 impl Library {
@@ -19,6 +20,7 @@ impl Library {
             items: Vec::new(),
             books: Vec::new(),
             magazines: Vec::new(),
+            users: Vec::new(),
         }
     }
 
@@ -77,12 +79,14 @@ impl Library {
     pub fn save_to_file(&self) {
         let books_json = serde_json::to_string_pretty(&self.books).expect("Failed to serialize books.");
         let magazines_json = serde_json::to_string_pretty(&self.magazines).expect("Failed to serialize magazines.");
+        let users_json = serde_json::to_string_pretty(&self.users).unwrap();
 
         let mut file = File::create("library_save.json").expect("Failed to create new file.");
 
         writeln!(file, "{{").unwrap();
         writeln!(file, "\"books\": {},", books_json).unwrap();
-        writeln!(file, "\"magazines\": {}", magazines_json).unwrap();
+        writeln!(file, "\"magazines\": {},", magazines_json).unwrap();
+        writeln!(file, "\"users\": {}", users_json).unwrap();
         writeln!(file, "}}").unwrap();
 
         println!("Library saved to 'library_save.json'");
@@ -95,9 +99,11 @@ impl Library {
 
         let books: Vec<Book> = serde_json::from_value(parsed["books"].clone()).expect("Failed to deserialize books.");
         let magazines: Vec<Magazine> = serde_json::from_value(parsed["magazines"].clone()).expect("Failed to deserialize magazines.");
+        let users: Vec<User> = serde_json::from_value(parsed["users"].clone()).expect("Failed to deserialize users.");
 
         self.books = books;
         self.magazines = magazines;
+        self.users = users;
 
         self.items.clear();
         for book in &self.books {

@@ -11,6 +11,7 @@ fn main() {
         items: Vec::new(),
         books: Vec::new(),
         magazines: Vec::new(),
+        users: Vec::new(),
     };
 
     let book1 = Book {
