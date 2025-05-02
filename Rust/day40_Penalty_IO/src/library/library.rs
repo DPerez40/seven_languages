@@ -24,6 +24,27 @@ impl Library {
         }
     }
 
+    pub fn list_users(&self) {
+        println!("\n----- Library Users -----");
+        for user in &self.users {
+            println!("{} owes ${}", user.name, user.penalty_fees);
+        }
+    }
+
+    pub fn add_user(&mut self, name: &str) {
+        if self.users.iter().any(|u| u.name == name) {
+            println!("User '{}' already exists.", name);
+        } else {
+            let user = User::new(name);
+            self.users.push(user);
+            println!("User '{}' has been added to the system.", name);
+        }
+    }
+
+    pub fn get_user_mut(&mut self, name: &str) -> Option<&mut User> {
+        self.users.iter_mut().find(|u| u.name == name)
+    }
+
     pub fn add_item(&mut self, item: Box<dyn Borrowable>) {
         self.items.push(item);
     }
