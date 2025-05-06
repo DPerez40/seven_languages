@@ -27,6 +27,10 @@ impl Borrowable for Book {
         }
     }
 
+    fn is_borrowed(&self) -> bool {
+        self.borrowed
+    }
+
     fn reserve_item(&mut self, user: String) {
         self.reservations.push(user.clone());
         println!("{} has been added to the reservation list for '{}'.", user, self.title);
@@ -55,7 +59,7 @@ impl Borrowable for Book {
             self.due_date = None;
 
             if let Some(next_user) = self.reservations.first() {
-                println!("'{}' is now reserved and sent to {}!", self.title, next_user);
+                println!("'{}' was returned and is now sent to {}!", self.title, next_user);
                 self.borrowed = true;
                 self.borrowed_date = Some(SystemTime::now());
                 self.due_date = Some(SystemTime::now() + Duration::new(14 * 24 * 60 * 60, 0));

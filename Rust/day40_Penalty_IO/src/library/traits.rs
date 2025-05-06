@@ -7,4 +7,5 @@ pub trait Borrowable: Any {
     fn reserve_item(&mut self, user: String);
     fn status(&self) -> String;
     fn as_any(&mut self) -> &mut dyn Any;
+    fn is_borrowed(&self) -> bool;
 }

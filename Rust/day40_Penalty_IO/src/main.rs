@@ -7,31 +7,8 @@ use library::traits::Borrowable;
 use library::library::Library; 
 
 fn main() {
-    let mut library = Library {
-        items: Vec::new(),
-        books: Vec::new(),
-        magazines: Vec::new(),
-        users: Vec::new(),
-    };
-
-    let book1 = Book {
-        title: String::from("Dune"),
-        author: String::from("Frank Herbert"),
-        year: 1965,
-        borrowed: false,
-        borrowed_date: None,
-        due_date: None,
-        reservations: Vec::new(),
-    };
-
-    let magazine1 = Magazine {
-        title: String::from("Scientific American"),
-        issue: String::from("March 2024"),
-        borrowed: false,
-        borrowed_date: None,
-        due_date: None,
-        reservations: Vec::new(),
-    };
+    let mut library = Library::new();
+    library.load_from_file();
 
     use std::io::{self, Write};
 
@@ -45,7 +22,8 @@ fn main() {
         println!("6. Add a Book");
         println!("7. Add a Magazine");
         println!("8. Add a User");
-        println!("9. Save and Exit");
+        println!("9. Search for an item");
+        println!("10. Save and Exit");
 
         print!("Choose an option: ");
         io::stdout().flush().unwrap();
@@ -62,6 +40,11 @@ fn main() {
                 io::stdin().read_line(&mut name).unwrap();
                 let name = name.trim();
 
+                if !library.users.iter().any(|u| u.name == name) {
+                    println!("User '{}' not found.", name);
+                    continue;
+                }
+
                 println!("Enter the item index you want to borrow: ");
                 let mut index_str = String::new();
                 io::stdin().read_line(&mut index_str).unwrap();
@@ -75,6 +58,11 @@ fn main() {
                 let mut name = String::new();
                 io::stdin().read_line(&mut name).unwrap();
                 let name = name.trim().to_string();
+
+                if !library.users.iter().any(|u| u.name == name) {
+                    println!("User '{}' not found.", name);
+                    continue;
+                }
 
                 println!("Enter the item index for returning item: ");
                 let mut index_str = String::new();
@@ -99,6 +87,11 @@ fn main() {
                 let mut name = String::new();
                 io::stdin().read_line(&mut name).unwrap();
                 let name = name.trim();
+
+                if !library.users.iter().any(|u| u.name == name) {
+                    println!("User '{}' not found.", name);
+                    continue;
+                }
 
                 println!("What is the item index of the item you are trying to reserve?");
                 let mut index_str = String::new();
@@ -136,8 +129,9 @@ fn main() {
                     reservations: Vec::new(),
                 };
 
-                library.books.push(book.clone());
-                library.items.push(Box::new(book));
+                library.books.push(book.clone());               
+                library.items.push(Box::new(book) as Box<dyn Borrowable>);              
+
                 println!("'{}' has been added to the library. Feed me more books!", title);
             }
 
@@ -162,7 +156,7 @@ fn main() {
                 };
 
                 library.magazines.push(mag.clone());
-                library.items.push(Box::new(mag));
+                library.items.push(Box::new(mag) as Box<dyn Borrowable>);
                 println!("Magazine '{}' has been added to the library!", title);
             }
 
@@ -173,10 +167,17 @@ fn main() {
                 let name = name.trim();
 
                 library.add_user(name);
-                println!("'{}' has been added as a user to the library.", name);
             }
 
             "9" => {
+                println!("Enter a search keyword:");
+                let mut keyword = String::new();
+                io::stdin().read_line(&mut keyword).unwrap();
+                let keyword = keyword.trim();
+                library.search(keyword);
+            }
+
+            "10" => {
                 library.save_to_file();
                 println!("C ya!");
                 break;

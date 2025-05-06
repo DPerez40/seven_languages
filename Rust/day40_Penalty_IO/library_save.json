@@ -11,8 +11,34 @@
   },
   {
     "title": "Musashi",
-    "author": "Eiji Woshikawa",
+    "author": "Eiji Yoshikawa",
     "year": 1935,
+    "borrowed": false,
+    "borrowed_date": null,
+    "due_date": null,
+    "reservations": []
+  },
+  {
+    "title": "The Fountainhead",
+    "author": "Ayn Rand",
+    "year": 1943,
+    "borrowed": true,
+    "borrowed_date": {
+      "secs_since_epoch": 1746554609,
+      "nanos_since_epoch": 967987000
+    },
+    "due_date": {
+      "secs_since_epoch": 1747764209,
+      "nanos_since_epoch": 967987000
+    },
+    "reservations": [
+      "Brutus"
+    ]
+  },
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "year": 1949,
     "borrowed": false,
     "borrowed_date": null,
     "due_date": null,
@@ -27,6 +53,14 @@
     "borrowed_date": null,
     "due_date": null,
     "reservations": []
+  },
+  {
+    "title": "Zoobooks",
+    "issue": "22",
+    "borrowed": false,
+    "borrowed_date": null,
+    "due_date": null,
+    "reservations": []
   }
 ],
 "users": [
@@ -36,6 +70,10 @@
   },
   {
     "name": "Brutus",
+    "penalty_fees": 0
+  },
+  {
+    "name": "Kelsey",
     "penalty_fees": 0
   }
 ]

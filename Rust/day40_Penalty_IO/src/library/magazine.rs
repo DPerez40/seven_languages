@@ -26,6 +26,10 @@ impl Borrowable for Magazine {
         }
     }
 
+    fn is_borrowed(&self) -> bool {
+        self.borrowed
+    }
+
     fn reserve_item(&mut self, user: String) {
         self.reservations.push(user.clone());
         println!("{} has been added to the reservation list for '{}'.", user, self.title);

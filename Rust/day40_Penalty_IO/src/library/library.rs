@@ -58,15 +58,20 @@ impl Library {
     }
 
     pub fn list_items(&self) {
-        println!("Items in library:");
-        for item in &self.items {
-            println!("- {}", item.status());
+        println!("\n----- Items in library: -----");
+        for (i, item) in self.items.iter().enumerate() {
+            println!("{}. {}", i, item.status());
         }
     }
 
     pub fn borrow_item(&mut self, index: usize) {
         if let Some(item) = self.items.get_mut(index) {
-            item.borrow_item();
+            if item.is_borrowed() {
+                println!("That item is already borrowed.");
+            } else {
+                item.borrow_item();
+                println!("Item borrowed successfully.");
+            }
         } else {
             println!("Invalid item index.");
         }
@@ -97,7 +102,16 @@ impl Library {
         }
     }
 
-    pub fn save_to_file(&self) {
+    pub fn save_to_file(&mut self) {
+        self.books.clear();
+        self.magazines.clear();
+        for item in &mut self.items{
+            if let Some(book) = item.as_any().downcast_ref::<Book>() {
+                self.books.push(book.clone());
+            } else if let Some(magazine) = item.as_any().downcast_ref::<Magazine>() {
+                self.magazines.push(magazine.clone());
+            }
+        }
         let books_json = serde_json::to_string_pretty(&self.books).expect("Failed to serialize books.");
         let magazines_json = serde_json::to_string_pretty(&self.magazines).expect("Failed to serialize magazines.");
         let users_json = serde_json::to_string_pretty(&self.users).unwrap();
@@ -127,11 +141,11 @@ impl Library {
         self.users = users;
 
         self.items.clear();
-        for book in &self.books {
-            self.items.push(Box::new(book.clone()));
+        for book in self.books.iter() {
+            self.items.push(Box::new(book.clone()) as Box<dyn Borrowable>);
         }
-        for mag in &self.magazines {
-            self.items.push(Box::new(mag.clone()));
+        for mag in self.magazines.iter() {
+            self.items.push(Box::new(mag.clone()) as Box<dyn Borrowable>);
         }
 
         println!("Library loaded from 'library_save.json'.");
