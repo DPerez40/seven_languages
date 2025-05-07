@@ -1,5 +1,6 @@
 use std::time::{SystemTime, Duration};
 use serde::{Serialize, Deserialize};
+use std::any::Any;
 use crate::library::traits::Borrowable;
 use crate::library::user::User;
 
@@ -35,7 +36,7 @@ impl Borrowable for Magazine {
         println!("{} has been added to the reservation list for '{}'.", user, self.title);
     }
 
-    fn as_any(&mut self) -> &mut dyn std::any::Any {
+    fn as_any(&self) -> &dyn Any {
         self
     }
 

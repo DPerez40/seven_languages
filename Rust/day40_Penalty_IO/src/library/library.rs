@@ -31,6 +31,54 @@ impl Library {
         }
     }
 
+    pub fn list_overdue_items(&mut self) {
+        use std::time::SystemTime;
+
+        println!("\n ----- Overdue Items -----");
+        let now = SystemTime::now();
+        let mut found = false;
+
+        for (i, item) in self.items.iter_mut().enumerate() {
+            let mut overdue = false;
+            let mut days_overdue = 0;
+
+            // downcast to Book
+            if let Some(book) = item.as_any().downcast_ref::<Book>() {
+                if let Some(due) = book.due_date {
+                    if book.borrowed && now > due {
+                        overdue = true;
+                        days_overdue = now.duration_since(due).unwrap().as_secs() / (24 * 60 * 60);
+                    }
+                }
+
+                if overdue {
+                    println!("{}. '{}' ({} days overdue)", i, book.title, days_overdue);
+                    found = true;
+                }
+            }
+
+            // downcast to Magazine
+
+        if let Some(mag) = item.as_any().downcast_ref::<Magazine>() {
+            if let Some(due) = mag.due_date {
+                if mag.borrowed && now > due {
+                    overdue = true;
+                    days_overdue = now.duration_since(due).unwrap().as_secs() / (24 * 60 * 60);
+                }
+            }
+
+            if overdue {
+                println!("{}. '{}' ({} days overdue)", i, mag.title, days_overdue);
+                found = true;
+                }
+            }
+        }
+
+        if !found {
+            println!("No overdue books found.");
+        }
+    }
+
     pub fn add_user(&mut self, name: &str) {
         if self.users.iter().any(|u| u.name == name) {
             println!("User '{}' already exists.", name);
@@ -38,6 +86,15 @@ impl Library {
             let user = User::new(name);
             self.users.push(user);
             println!("User '{}' has been added to the system.", name);
+        }
+    }
+
+    pub fn remove_user(&mut self, name: &str) {
+        if let Some(pos) = self.users.iter().position(|u| u.name == name) {
+            self.users.remove(pos);
+            println!("User '{}' has been removed from the system.", name);
+        } else {
+            println!("No user found with name '{}'", name);
         }
     }
 

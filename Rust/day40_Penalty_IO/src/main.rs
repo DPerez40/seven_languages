@@ -23,7 +23,10 @@ fn main() {
         println!("7. Add a Magazine");
         println!("8. Add a User");
         println!("9. Search for an item");
-        println!("10. Save and Exit");
+        println!("10. List Overdue Items");
+        println!("11. View User Details");
+        println!("12. Remove a User");
+        println!("13. Save and Exit");
 
         print!("Choose an option: ");
         io::stdout().flush().unwrap();
@@ -177,7 +180,54 @@ fn main() {
                 library.search(keyword);
             }
 
-            "10" => {
+            "10" => library.list_overdue_items(),
+
+            "11" => {
+                println!("Enter user's name: ");
+                let mut name = String::new();
+                io::stdin().read_line(&mut name).unwrap();
+                let name = name.trim();
+
+                if let Some(user) = library.users.iter().find(|u| u.name == name) {
+                    println!("\nUser: {}", user.name);
+                    println!("Penalty Owed: {}", user.penalty_fees);
+                    println!("Borrowed Items: ");
+
+                    for item in &library.items {
+                        if item.is_borrowed() {
+                            // Try to downcast
+                            if let Some(book) = item.as_any().downcast_ref::<Book>() {
+                                if book.reservations.contains(&user.name) {
+                                    println!("- {} (reserved)", book.title);
+                                } else if book.borrowed {
+                                    println!("- {} (borrowed)", book.title);
+                                }
+                            }
+
+                            //Try to downcast
+                            if let Some(mag) = item.as_any().downcast_ref::<Magazine>() {
+                                if mag.reservations.contains(&user.name) {
+                                    println!("- {} (reserved)", mag.title);
+                                } else if mag.borrowed {
+                                    println!("- {} (borrowed)", mag.title);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    println!("User '{}' not found", name);
+                }
+            }
+
+            "12" => {
+                println!("Enter the name of the user you would like to remove: ");
+                let mut name = String::new();
+                io::stdin().read_line(&mut name).unwrap();
+                let name = name.trim();
+                library.remove_user(name);
+            }
+
+            "13" => {
                 library.save_to_file();
                 println!("C ya!");
                 break;

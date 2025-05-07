@@ -36,7 +36,7 @@ impl Borrowable for Book {
         println!("{} has been added to the reservation list for '{}'.", user, self.title);
     }
 
-    fn as_any(&mut self) -> &mut dyn std::any::Any {
+    fn as_any(&self) -> &dyn std::any::Any {
         self
     }
 
